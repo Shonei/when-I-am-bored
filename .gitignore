@@ -100,5 +100,5 @@ ENV/
 # mypy
 .mypy_cache/
 
-impress-cv/index.html
-impress-cv/css/impress-demo.css
+demo.html
+website/css/impress-demo.css
