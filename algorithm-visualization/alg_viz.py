@@ -42,7 +42,7 @@ class Viz:
         a = map(f_norm , arr)
         self.list = list(a)
         self.line_width = ceil(self.w / len(self.list))
-
+    
     def compare(self, arr, h, j):
         self.clock.tick(self.framerate)
 
