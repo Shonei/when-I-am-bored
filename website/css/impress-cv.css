@@ -48,8 +48,7 @@ body {
     font-family: 'PT Sans', sans-serif;
     min-height: 740px;
 
-    /* background: rgb(223, 223, 223); */
-    background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 500, from(rgb(240, 240, 240)), to(rgb(201, 201, 201)));
+    background: -webkit-gradient(radial, 70% 0, 0, 70% 0, 500, from(rgb(240, 240, 240)), to(rgb(201, 201, 201)));
     background: -webkit-radial-gradient(rgb(240, 240, 240) 70%, rgb(201, 201, 201));
     background:    -moz-radial-gradient(rgb(240, 240, 240) 70%, rgb(201, 201, 201));
     background:     -ms-radial-gradient(rgb(240, 240, 240) 70%, rgb(201, 201, 201));
@@ -142,7 +141,7 @@ a:focus {
     position: fixed;
     left: 0;
     right: 0;
-    bottom: 200px;
+    bottom: 50px;
 
     background: rgba(0,0,0,0.5);
     color: #EEE;
@@ -171,7 +170,7 @@ a:focus {
 
 .impress-enabled .hint { display: block }
 
-.impress-on-bored .hint {
+.impress-on-name .hint {
     opacity: 1;
 
     -webkit-transform: translateY(0px);
@@ -200,9 +199,10 @@ a:focus {
     text-align: center;
 }
 
-#about-me {
+.par {
     font-size: 30px;
     text-align: justify;
+    /* width: 700px; */
 }
 
 #uni {
@@ -233,4 +233,36 @@ tr:nth-child(odd) {
 
 td:nth-child(odd) {
     border-right: 1px solid rgba(100,100,100,0.5);
+}
+
+#web {
+    width: 600px;
+}
+
+#web-link {
+    width: 600px;
+    font-size: 40px;
+    text-align: left;
+}
+
+#booking {
+    width: 700px;
+}
+
+#c-source {
+    font-size: 40px;
+}
+
+.extra {
+    width: 600px;
+}
+
+.impress-on-sad {
+    background: -webkit-gradient(radial, 0 50%, 0, 0 50%, 500, from(rgb(240, 240, 240)), to(rgb(201, 201, 201)));
+    background: -webkit-radial-gradient(rgb(240, 240, 240) , rgb(201, 201, 201) 50%);
+    background:    -moz-radial-gradient(rgb(240, 240, 240) , rgb(201, 201, 201) 50%);
+    background:     -ms-radial-gradient(rgb(240, 240, 240) , rgb(201, 201, 201) 50%);
+    background:      -o-radial-gradient(rgb(240, 240, 240) , rgb(201, 201, 201) 50%);
+    background:         radial-gradient(rgb(240, 240, 240) , rgb(201, 201, 201) 50%);
+
 }

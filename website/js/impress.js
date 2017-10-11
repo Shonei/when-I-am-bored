@@ -171,7 +171,7 @@
 
                           // Browser should support `classList` and `dataset` APIs
                            ( body.classList ) &&
-                           ( body.dataset ) //&&
+                           ( body.dataset ) // && uncomment tostop mobile support
 
                           // But some mobile devices need to be blacklisted,
                           // because their CSS 3D support or hardware is not
