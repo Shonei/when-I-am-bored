@@ -102,3 +102,5 @@ ENV/
 
 demo.html
 website/css/impress-demo.css
+
+portfolio/node_modules
