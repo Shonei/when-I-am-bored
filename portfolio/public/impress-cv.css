@@ -266,3 +266,20 @@ td:nth-child(odd) {
     background:         radial-gradient(rgb(240, 240, 240) , rgb(201, 201, 201) 50%);
 
 }
+
+.btn {
+    display: block;
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    background: rgba(0,0,0,0.5);
+    color: #EEE;
+    text-align: center;
+
+    font-size: 25px;
+    padding: 20px;
+
+    z-index: 100;
+    opacity: 1;
+}
