@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Breadcrumb, MenuItem, Row, Col} from 'react-materialize';
+import {Breadcrumb, MenuItem, Row, Col, Button} from 'react-materialize';
 import Item from './Item';
 
 class Scrabble extends Component {
@@ -28,7 +28,9 @@ class Scrabble extends Component {
 
   handleClick(user) {
     this.props.database.ref('scrabble/members/'+user).once('value').then(snapshot => {
-      window.localStorage.setItem('user', window.JSON.stringify(snapshot.val()));
+      let temp = snapshot.val();
+      temp.uname = user;
+      window.localStorage.setItem('user', window.JSON.stringify(temp));
       window.location.href = 'scrabble/user';
     });
   }
@@ -43,6 +45,11 @@ class Scrabble extends Component {
         <Row></Row>
         <div className="container">
           {this.state.body}
+          <Row>
+            <a className="center-align" href="scrabble/leaderboard">
+              <Button waves="light">Leaderborads</Button>
+            </a>
+          </Row>
         </div>
       </div>
     );

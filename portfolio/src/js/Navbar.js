@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import {Navbar, NavItem} from 'react-materialize';
 import Grid from './Grid';
 import Scrabble from './Scrabble';
-import User from './User'
+import User from './User';
+import Lead from './Leaderboard';
 
 class Nav extends Component {
   constructor(props) {
@@ -24,6 +25,8 @@ class Nav extends Component {
       ReactDOM.render(<Grid></Grid>, document.getElementById('content'));
     } else if(window.location.pathname === '/scrabble/user') {
       ReactDOM.render(<User></User>, document.getElementById('content'));
+    } else if(window.location.pathname === '/scrabble/leaderboard') {
+      ReactDOM.render(<Lead></Lead>, document.getElementById('content'));
     }
   }
 
