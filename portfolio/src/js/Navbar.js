@@ -24,9 +24,13 @@ class Nav extends Component {
     } else if(window.location.pathname === '/') {
       ReactDOM.render(<Grid></Grid>, document.getElementById('content'));
     } else if(window.location.pathname === '/scrabble/user') {
-      ReactDOM.render(<User></User>, document.getElementById('content'));
+      ReactDOM.render(<User 
+        database={this.props.firebase.database()}>
+        </User>, document.getElementById('content'));
     } else if(window.location.pathname === '/scrabble/leaderboard') {
-      ReactDOM.render(<Lead></Lead>, document.getElementById('content'));
+      ReactDOM.render(<Lead 
+        database={this.props.firebase.database()}>
+        </Lead>, document.getElementById('content'));
     }
   }
 

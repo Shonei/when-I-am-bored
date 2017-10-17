@@ -28,10 +28,13 @@ class User extends Component {
     temp.l_name = document.getElementById('l_name').value;
     temp.email = document.getElementById('email').value;
     temp.phone = document.getElementById('phone').value;
-    temp.uname = document.getElementById('uname').value;
-
+    
+    this.props.database.ref('scrabble/members/' + temp.uname).update(temp);
+    
     this.setState({user : temp});
     this.setState({editing : false});
+
+    window.localStorage.setItem('user', window.JSON.stringify(this.state.user));
   }
 
   getProfile() {
@@ -42,7 +45,9 @@ class User extends Component {
           <Input id="l_name" s={12} label="Last name" defaultValue={this.state.user.l_name} ></Input>
           <Input id="email" s={12} label="Email" defaultValue={this.state.user.email} ></Input>
           <Input id="phone" s={12} label="Phone number" defaultValue={this.state.user.phone} ></Input>
-          <Input id="uname" s={12} label="Username" defaultValue={this.state.user.uname}></Input>          
+          <Collection>
+            <CollectionItem><b>Username: </b>{this.state.user.uname}</CollectionItem>
+          </Collection>
           <Button s={6} waves="light" onClick={this.update}><Icon left>update</Icon>Update</Button>
           <Button s={6} waves="light" onClick={()=>this.setState({editing:false})}>Cancel</Button>
         </Col>
