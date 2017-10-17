@@ -15,7 +15,7 @@ class Scrabble extends Component {
     this.props.database.ref('scrabble/members').once('value').then(snapshot => {
       const arr = [];
       for(let key in snapshot.val()) {
-        const item = <Col key={key} s={4}><Item 
+        const item = <Col key={key} s={12} m={6} l={4}><Item 
                           title={key} img={snapshot.val()[key].img} 
                           onclick={(e)=>this.handleClick(key)}/>
                       </Col>;
@@ -45,8 +45,8 @@ class Scrabble extends Component {
         <Row></Row>
         <div className="container">
           {this.state.body}
-          <Row>
-            <a className="center-align" href="scrabble/leaderboard">
+          <Row className="center-align">
+            <a href="scrabble/leaderboard">
               <Button waves="light">Leaderborads</Button>
             </a>
           </Row>

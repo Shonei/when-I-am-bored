@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import {Row, Col} from 'react-materialize';
-import '../css/leaderboard.css';
+import {Row, Col, Breadcrumb, MenuItem} from 'react-materialize';
 
 const p = {
   fontSize: '20px'
@@ -43,11 +42,18 @@ class Lead extends Component {
 
   render() {
     return (
-      <div className="container">
-        <h3 className="center-align">Leaderboard</h3>
-        <Row>
-          {this.state.users}
-        </Row>
+      <div>
+        <Breadcrumb>
+          <MenuItem href="/">Home page</MenuItem>
+          <MenuItem href="/scrabble">Scrabble</MenuItem>
+          <MenuItem href="/scrabble/leaderboard">Leaderboard</MenuItem>
+        </Breadcrumb>
+        <div className="container">
+          <h3 className="center-align">Leaderboard</h3>
+          <Row>
+            {this.state.users}
+          </Row>
+        </div>
       </div>
     );
   }

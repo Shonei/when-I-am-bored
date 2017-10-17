@@ -104,7 +104,7 @@ class User extends Component {
         <Breadcrumb>
           <MenuItem href="/">Home page</MenuItem>
           <MenuItem href="/scrabble">Scrabble</MenuItem>
-          <MenuItem href="/scrabble/user">Scrabble</MenuItem>
+          <MenuItem href="/scrabble/user">User</MenuItem>
         </Breadcrumb>
         <Row></Row>
         <div className="container">
