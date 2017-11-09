@@ -5,6 +5,7 @@ import Grid from './Grid';
 import Scrabble from './Scrabble';
 import User from './User';
 import Lead from './Leaderboard';
+import MainDs from './main-ds';
 
 class Nav extends Component {
   constructor(props) {
@@ -31,6 +32,8 @@ class Nav extends Component {
       ReactDOM.render(<Lead 
         database={this.props.firebase.database()}>
         </Lead>, document.getElementById('content'));
+    } else if (window.location.pathname === '/ds') {
+      ReactDOM.render(<MainDs></MainDs>, document.getElementById('content'));
     }
   }
 
@@ -38,7 +41,7 @@ class Nav extends Component {
     return (
       <div>
         <Navbar className="indigo lighten-3">
-          <NavItem href="/" className="indigo lighten-3">About me</NavItem>
+          <NavItem href="/" className="indigo lighten-3">Home</NavItem>
           <NavItem target="_blank" href="/cv.html" className="indigo lighten-3">CV</NavItem>
           <NavItem href="https://github.com/Shonei" className="indigo lighten-3">Github</NavItem>
         </Navbar>
