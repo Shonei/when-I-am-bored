@@ -3,11 +3,11 @@ import Search from './Search';
 import Saved from './Saved';
 
 const a = {
-    // lineHeight: '1em',
-    // display: 'inline - block',
-    // textDecoration: 'none',
-    // padding: '2px',
-    margin: '2px'
+  // lineHeight: '1em',
+  // display: 'inline - block',
+  // textDecoration: 'none',
+  // padding: '2px',
+  margin: '2px'
 };
 
 class MainDs extends Component {
@@ -22,18 +22,10 @@ class MainDs extends Component {
   render() {
     return (
       <div>
-        <br/>
+        <br />
         <div>
-          <a style={a} onClick={()=>this.setState({body:<Search></Search>})} className="waves-effect waves-light btn">Search</a>
-          <a style={a} onClick={()=>this.setState({body:<Saved></Saved>})} className="waves-effect waves-light btn">Saved</a>
-          <a style={a} className="dropdown-button btn" data-activates="lang">Language</a>
-          <div>
-            <ul id="lang" className="dropdown-content">
-              <li><a value="bg" onClick={e => console.log(e.target.getAttribute('value'))}>Bulgarian</a></li>
-              <li><a>Spanish</a></li>
-              <li className="divider"></li>
-            </ul>
-          </div>
+          <a style={a} onClick={() => this.setState({ body: <Search></Search> })} className="waves-effect waves-light btn"><i className="material-icons left">folder</i>Search</a>
+          <a style={a} onClick={() => this.setState({ body: <Saved></Saved> })} className="waves-effect waves-light btn"><i className="material-icons left">folder</i>Saved</a>
         </div>
         {this.state.body}
       </div>

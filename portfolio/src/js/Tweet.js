@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 const iStyle = {
-  cursor : 'pointer'
+  cursor: 'pointer'
 };
 
 class Tweet extends Component {
@@ -20,15 +20,15 @@ class Tweet extends Component {
   }
 
   translated(text) {
-    this.setState({translated:text});
+    this.setState({ translated: text });
     const body = <p><b>Translated: </b>{text}</p>;
-    this.setState({translatedBody:body});
-    this.setState({action:this.props.saveTweet});
-    this.setState({icon:'save'});
+    this.setState({ translatedBody: body });
+    this.setState({ action: this.props.saveTweet });
+    this.setState({ icon: 'save' });
   }
 
   handleClick(e) {
-    if(this.state.translated === null) {
+    if (this.state.translated === null) {
       this.state.action(this.props.content, this.translated);
     } else {
       this.state.action(this.props.user, this.props.content, this.state.translated);
