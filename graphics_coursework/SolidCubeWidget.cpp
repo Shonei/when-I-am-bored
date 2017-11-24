@@ -304,15 +304,15 @@ void SolidCubeWidget::super_sphere() {
 double  SolidCubeWidget::super_formula(double angle) {
   double a = 1.0;
   double b = 1.0;
-  double m = 0.3;
-  double n1 = 0.2;
-  double n2 = 1.7;
+  double m = 3;
+  double n1 = 1.0;
+  double n2 = -1.7;
   double n3 = 1.7;
 
-  double part1 = qFabs(qCos(( m * angle ) / 4 ) / a );
+  double part1 = qFabs(qCos(( m * angle ) / 4.0 ) / a );
   part1 = qPow(part1, n2);
 
-  double part2 = qFabs(qCos(( m * angle ) / 4 ) / b );
+  double part2 = qFabs(qSin(( m * angle ) / 4.0 ) / b );
   part2 = qPow(part2, n3);
 
   return qPow((part1 + part2), -1/n1);
