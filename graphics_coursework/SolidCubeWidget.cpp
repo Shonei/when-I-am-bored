@@ -42,6 +42,7 @@ void SolidCubeWidget::initializeGL()
 	glClearColor(0.3, 0.3, 0.3, 0.0);
 	angle = 0;
   this->sphere();
+  this->super_sphere();
   QTimer *timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(update()));
   timer->start(100);
@@ -263,26 +264,12 @@ void SolidCubeWidget::world_marker() {
 }
 	
 void SolidCubeWidget::sphere() {
-  // GLfloat normals[][3] = { {0.333, 1., 0.333 }, {0.333, 1., 0.333}, {0.333, 1., 0.333}, {0.3333, 0.3333, 0.333}};
-  // materialStruct *p_front = &brassMaterials;
-  
-  // glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,    p_front->ambient);
-  // glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,    p_front->diffuse);
-  // glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,   p_front->specular);
-  // glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS,   p_front->shininess);
-
-  // glNormal3fv(normals[4]); 
-
-  // float x;
-  // float y;
-  // float z;
   double loop = M_PI / 36;
-  std::cout << loop << std::endl;
+  // std::cout << loop << std::endl;
   for (double theta = 0; theta <= M_PI; theta += loop) {
-    // glBegin(GL_POINTS);
     QVector<point> temp;
     for (double phi = 0; phi <= 2*M_PI; phi += loop*2) {
-    std::cout << theta << " " << phi <<std::endl;
+    // std::cout << theta << " " << phi <<std::endl;
       point t;
       t.x = qSin(theta)*qCos(phi)*10;
       t.y = qSin(theta)*qSin(phi)*10;
@@ -293,6 +280,42 @@ void SolidCubeWidget::sphere() {
     globe.prepend(temp);
     // glEnd();
   }
+}
+
+void SolidCubeWidget::super_sphere() {
+  double loop = M_PI / 36;
+  // std::cout << loop << std::endl;
+  for (double theta = -M_PI/2; theta <= M_PI/2; theta += loop) {
+    QVector<point> temp;
+    double r1 = super_formula(theta);
+    for (double phi = -M_PI; phi <= M_PI; phi += loop*2) {
+      point t;
+      double r2 = super_formula(phi);
+    std::cout << r2 <<std::endl;
+      t.x = r1 * qCos(theta) * r2 * qCos(phi) * 10;
+      t.y = r1 * qCos(theta) * r2 * qSin(phi) * 10;
+      t.z = r1 * qSin(theta) * 10;
+      temp.prepend(t);
+    }
+    super_shape.prepend(temp);
+  }
+}
+
+double  SolidCubeWidget::super_formula(double angle) {
+  double a = 1.0;
+  double b = 1.0;
+  double m = 0.3;
+  double n1 = 0.2;
+  double n2 = 1.7;
+  double n3 = 1.7;
+
+  double part1 = qFabs(qCos(( m * angle ) / 4 ) / a );
+  part1 = qPow(part1, n2);
+
+  double part2 = qFabs(qCos(( m * angle ) / 4 ) / b );
+  part2 = qPow(part2, n3);
+
+  return qPow((part1 + part2), -1/n1);
 }
 
 void SolidCubeWidget::drawShape(QVector< QVector<point> > vec) {
@@ -340,9 +363,10 @@ void SolidCubeWidget::paintGL() { // paintGL()
   }
   glRotatef(angle, 0.0, 1.0, 0.0);
 
-	this->world_marker();
-  this->house();
-  this->drawShape(globe);
+	// this->world_marker();
+ //  this->house();
+  // this->drawShape(globe);
+  this->drawShape(super_shape);
 
   glScalef(0.5, 0.5, 0.5);
 	glMatrixMode(GL_MODELVIEW);

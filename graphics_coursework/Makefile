@@ -606,7 +606,10 @@ SolidCubeMain.o: SolidCubeMain.cpp /home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_
 		SolidCubeWidget.h \
 		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/QTimer \
 		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/qtimer.h \
-		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/qbasictimer.h
+		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/qbasictimer.h \
+		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/QtMath \
+		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/qmath.h \
+		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/QVector
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o SolidCubeMain.o SolidCubeMain.cpp
 
 SolidCubeWidget.o: SolidCubeWidget.cpp /home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtOpenGL/QGLWidget \
@@ -725,7 +728,10 @@ SolidCubeWidget.o: SolidCubeWidget.cpp /home/cserv1_b/apps/install/qt/5.3.1/5.3/
 		SolidCubeWidget.h \
 		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/QTimer \
 		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/qtimer.h \
-		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/qbasictimer.h
+		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/qbasictimer.h \
+		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/QtMath \
+		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/qmath.h \
+		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/QVector
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o SolidCubeWidget.o SolidCubeWidget.cpp
 
 SolidCubeWindow.o: SolidCubeWindow.cpp SolidCubeWindow.h \
@@ -859,7 +865,10 @@ SolidCubeWindow.o: SolidCubeWindow.cpp SolidCubeWindow.h \
 		SolidCubeWidget.h \
 		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/QTimer \
 		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/qtimer.h \
-		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/qbasictimer.h
+		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/qbasictimer.h \
+		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/QtMath \
+		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/qmath.h \
+		/home/cserv1_b/apps/install/qt/5.3.1/5.3/gcc_64/include/QtCore/QVector
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o SolidCubeWindow.o SolidCubeWindow.cpp
 
 ####### Install

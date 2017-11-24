@@ -31,9 +31,12 @@ class SolidCubeWidget: public QGLWidget
 
 	private:
 	QVector< QVector<point> > globe;
+	QVector< QVector<point> > super_shape;
 	void world_marker();
 	void house();
 	void sphere();
+	void super_sphere();
+	double super_formula(double);
 	void drawShape(QVector< QVector<point> >);
 	void polygon(int, int, int, int);
 
