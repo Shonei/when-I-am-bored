@@ -3,7 +3,6 @@
 #include <QGLWidget>
 #include "SolidCubeWidget.h"
 
-
 // Setting up material properties
 typedef struct materialStruct {
   GLfloat ambient[4];
@@ -19,42 +18,60 @@ static materialStruct brassMaterials = {
   27.8 
 };
 
-static materialStruct whiteShinyMaterials = {
-  { 1.0, 1.0, 1.0, 1.0},
-  { 1.0, 1.0, 1.0, 1.0},
-  { 1.0, 1.0, 1.0, 1.0},
-  100.0 
+static materialStruct earthGreen = {
+  { 0.0, 0.0, 0.0, 1.0 },
+  { 0.1, 0.35, 0.1, 1.0 },
+  { 0.45, 0.55, 0.45, 1.0 },
+  32.0
 };
 
+static materialStruct emerald = {
+  { 0.0215, 0.1745, 0.0215, 1.0 },
+  { 0.07568, 0.61424, 0.07568, 1.0  },
+  { 0.633, 0.727811, 0.633, 1.0 },
+  32.0
+};
+
+static materialStruct red_plastic = {
+  { 0.0, 0.0, 0.0, 1.0 },
+  { 0.5, 0.0, 0.0, 1.0 },
+  { 0.7, 0.6, 0.6, 1.0 },
+  32.0
+};
 
 // constructor
-SolidCubeWidget::SolidCubeWidget(QWidget *parent)
-	: QGLWidget(parent)
-	{ // constructor
-       
-
-	} // constructor
+SolidCubeWidget::SolidCubeWidget(QWidget *parent) : QGLWidget(parent) { 
+	angle = 0;
+  globe_angle = 0;
+  super_angle = 0;
+  planet1_angle = 0.0;
+  planet2_angle = 0.0;
+  planet3_angle = 0.0;
+  planet1_y = 0.0;
+  planet1_y_goal = 8.0;
+  m = 12.0;
+  n1 = 33.0;
+  n2 = -10.0;
+  n3 = 1.35; 
+} 
 
 // called when OpenGL context is set up
-void SolidCubeWidget::initializeGL()
-	{ // initializeGL()
-	// set the widget background colour
-	glClearColor(0.3, 0.3, 0.3, 0.0);
-	angle = 0;
-  this->sphere();
+void SolidCubeWidget::initializeGL() { 
+  glClearColor(0.3, 0.3, 0.3, 0.0);
+  this->sphere(7.0);
   this->super_sphere();
   QTimer *timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-  timer->start(100);
+  timer->start(20);
+} 
 
- 
-	} // initializeGL()
+void SolidCubeWidget::angleChange(int a) {
+  angle = a;
+}
 
 
 // called every time the widget is resized
-void SolidCubeWidget::resizeGL(int w, int h)
-	{ // resizeGL()
-	// set the viewport to the entire widget
+void SolidCubeWidget::resizeGL(int w, int h) { 
 	glViewport(0, 0, w, h);
 
 	glMatrixMode(GL_MODELVIEW);
@@ -72,7 +89,7 @@ void SolidCubeWidget::resizeGL(int w, int h)
 	glLoadIdentity();
 	glOrtho(-30.0, 30.0, -30.0, 30.0, -30.0, 30.0);
 
-	} // resizeGL()
+} 
 
 void SolidCubeWidget::house() {
   GLfloat normals[][3] = { {0.333, 1., 0.333 }, {0.333, 1., 0.333}, {0.333, 1., 0.333}, {0.3333, 0.3333, 0.333}};
@@ -219,133 +236,153 @@ void SolidCubeWidget::house() {
   glEnd();
     glPopMatrix();
 }
-
-void SolidCubeWidget::world_marker() {
-  // glPushMatrix();
-
-  GLfloat normal[][1] = {0.333, 1., 0.333 };
-  materialStruct* p_front = &whiteShinyMaterials;
 	
-  glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
-  glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
-  glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
-  glMaterialf(GL_FRONT, GL_SHININESS,   p_front->shininess);
-
-  // glNormal3fv(normal[0]);
-  // glBegin(GL_POLYGON);
-  //   glVertex3f(  10.0,  0.0,   10.0);
-  //   glVertex3f(  10.0,  0.0,  -10.0);
-  //   glVertex3f( -10.0,  0.0,  -10.0);
-  //   glVertex3f( -10.0,  0.0,   10.0);
-  // glEnd();  
-
-  glPushMatrix();
-  glTranslatef(15.0,0.0,0.0);
-  glutSolidTeapot(2.0);
-  glPopMatrix();
-
-  glPushMatrix();
-  glTranslatef(-15.0,7.0,-7.0);
-  glutSolidTeapot(2.0);
-  glPopMatrix();
-
-  glPushMatrix();
-  glTranslatef(0.0,0.0,15.0);
-  glutSolidTeapot(2.0);
-  glPopMatrix();
-
-  glPushMatrix();
-  glTranslatef(0.0,0.0,-15.0);
-  glutSolidTeapot(2.0);
-  // glutSolidTorus(3.0, 5.0, 4,4);
-  glPopMatrix();
-
-  // glPopMatrix();
-}
-	
-void SolidCubeWidget::sphere() {
+void SolidCubeWidget::sphere(float radios) {
   double loop = M_PI / 36;
-  // std::cout << loop << std::endl;
   for (double theta = 0; theta <= M_PI; theta += loop) {
     QVector<point> temp;
     for (double phi = 0; phi <= 2*M_PI; phi += loop*2) {
-    // std::cout << theta << " " << phi <<std::endl;
       point t;
-      t.x = qSin(theta)*qCos(phi)*10;
-      t.y = qSin(theta)*qSin(phi)*10;
-      t.z = qCos(theta)*10;
-      // glVertex3f( x, y, z);
+      t.r = qSin(4*phi + 0);
+      t.g = qSin(4*phi + 2);
+      t.b = qSin(4*phi + 3);
+      t.x = qSin(theta)*qCos(phi)*radios;
+      t.y = qSin(theta)*qSin(phi)*radios;
+      t.z = qCos(theta)*radios;
       temp.prepend(t);
     }
     globe.prepend(temp);
-    // glEnd();
   }
 }
 
-void SolidCubeWidget::super_sphere() {
+void SolidCubeWidget::super_sphere(float radios) {
   double loop = M_PI / 36;
-  // std::cout << loop << std::endl;
+  QVector< QVector<point> > temp_shape;
   for (double theta = -M_PI/2; theta <= M_PI/2; theta += loop) {
     QVector<point> temp;
     double r1 = super_formula(theta);
     for (double phi = -M_PI; phi <= M_PI; phi += loop*2) {
       point t;
       double r2 = super_formula(phi);
-    std::cout << r2 <<std::endl;
-      t.x = r1 * qCos(theta) * r2 * qCos(phi) * 10;
-      t.y = r1 * qCos(theta) * r2 * qSin(phi) * 10;
-      t.z = r1 * qSin(theta) * 10;
+      t.r = qSin(2*theta + 0);
+      t.g = qSin(2*theta + 2);
+      t.b = qSin(2*theta + 4);
+      t.x = r1 * qCos(theta) * r2 * qCos(phi) * radios;
+      t.y = r1 * qCos(theta) * r2 * qSin(phi) * radios;
+      t.z = r1 * qSin(theta) * radios;
       temp.prepend(t);
     }
-    super_shape.prepend(temp);
+    temp_shape.prepend(temp);
   }
+  super_shape = temp_shape;
 }
 
-double  SolidCubeWidget::super_formula(double angle) {
-  double a = 1.0;
-  double b = 1.0;
-  double m = 3;
-  double n1 = 1.0;
-  double n2 = -1.7;
-  double n3 = 1.7;
-
-  double part1 = qFabs(qCos(( m * angle ) / 4.0 ) / a );
+double  SolidCubeWidget::super_formula(float angle) {
+  double part1 = qFabs(qCos(( m * angle ) / 4.0 ) / 1 );
   part1 = qPow(part1, n2);
 
-  double part2 = qFabs(qSin(( m * angle ) / 4.0 ) / b );
+  double part2 = qFabs(qSin(( m * angle ) / 4.0 ) / 1 );
   part2 = qPow(part2, n3);
 
   return qPow((part1 + part2), -1/n1);
 }
 
 void SolidCubeWidget::drawShape(QVector< QVector<point> > vec) {
-  GLfloat normals[][3] = { {0.333, 1., 0.333 }, {0.333, 1., 0.333}, {0.333, 1., 0.333}, {0.3333, 0.3333, 0.333}};
+  glDisable(GL_LIGHTING);
+  glEnable(GL_SMOOTH);
+  // glShadeModel(GL_FLAT);
+  for (int i = 0; i < vec.size()-1; ++i) {
+    glBegin(GL_TRIANGLE_STRIP);
+    for (int j = 0; j < vec[i].size(); ++j) {
+      point t1 = vec[i][j];
+      glColor3f(t1.r, t1.g, t1.b); 
+      glVertex3f( t1.x, t1.y, t1.z);
+
+      point t2 = vec[i+1][j];
+      glColor3f(t2.r, t2.g, t2.b);
+      glVertex3f( t2.x, t2.y, t2.z);
+    }
+    glEnd();
+  }
+  glEnable(GL_LIGHTING);
+}
+
+void SolidCubeWidget::change_super(float m_n, float n1_n, float n2_n, float n3_n) {
+  m = m_n;
+  n1 = n1_n;
+  n2 = n2_n;
+  n3 = n3_n; 
+  this->super_sphere();
+}
+
+void SolidCubeWidget::system() {
   materialStruct *p_front = &brassMaterials;
-  
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,    p_front->ambient);
   glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,    p_front->diffuse);
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,   p_front->specular);
   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS,   p_front->shininess);
 
-  glNormal3fv(normals[4]); 
-  // std::cout << vec[0][37].x <<std::endl;
-  for (int i = 0; i < vec.size()-1; ++i) {
-    // glBegin(GL_POINTS);
-    // glBegin(GL_LINE_LOOP);
-    glBegin(GL_TRIANGLE_STRIP);
-    for (int j = 0; j < vec[i].size(); ++j) {
-      point t1 = vec[i][j];
-      glVertex3f( t1.x, t1.y, t1.z);
+  materialStruct *planet1 = &emerald;
+  materialStruct *planet2 = &earthGreen;
+  materialStruct *planet3 = &red_plastic;
 
-      point t2 = vec[i+1][j];
-      glVertex3f( t2.x, t2.y, t2.z);
+  glutSolidSphere(7.0, 10, 10);
+
+  // PLANET 1
+  glPushMatrix();
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,  planet1->ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,  planet1->diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, planet1->specular);
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, planet1->shininess);
+    planet1_angle += 1;
+    if(planet1_angle > 360) {
+      planet1_angle -= 360;
     }
-    glEnd();
-  }
+
+    planet1_y += 0.005*planet1_y_goal;
+    if(planet1_y > planet1_y_goal && planet1_y > planet1_y_goal*-1) {
+      planet1_y_goal *= -1;
+    } else if(planet1_y < planet1_y_goal && planet1_y < planet1_y_goal*-1) {
+      planet1_y_goal *= -1;
+    }
+    glRotatef(planet1_angle, 0.0, 1.0, 0.0);
+    glTranslatef(0.0, planet1_y, 15.0);
+    glutSolidSphere(3.5, 7.0, 7.0);
+  glPopMatrix();
+
+  // PLANET 2
+  glPushMatrix();
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,  planet2->ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,  planet2->diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, planet2->specular);
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, planet2->shininess);
+    planet2_angle += 1.7;
+    if(planet2_angle > 360) {
+      planet2_angle -= 360;
+    }
+    glRotatef(planet2_angle, 0.0, 1.0, 0.0);
+    glTranslatef(0.0, 0.0, 25.0);
+    glutSolidSphere(3.0, 7.0, 7.0);
+  glPopMatrix();
+
+  // PLANET 3
+  glPushMatrix();
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,  planet3->ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,  planet3->diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, planet3->specular);
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, planet3->shininess);
+    planet3_angle += 0.5;
+    if(planet3_angle > 360) {
+      planet3_angle -= 360;
+    }
+    glRotatef(planet3_angle, 0.0, 1.0, 0.0);
+    glTranslatef(0.0, 0.0, 40.0);
+    glutSolidSphere(4.0, 7.0, 7.0);
+  glPopMatrix();
 }
 
 // called every time the widget needs painting
-void SolidCubeWidget::paintGL() { // paintGL()
+void SolidCubeWidget::paintGL() { 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_DEPTH_TEST);                                                                                             
@@ -357,16 +394,34 @@ void SolidCubeWidget::paintGL() { // paintGL()
     glLightf (GL_LIGHT0, GL_SPOT_CUTOFF,15.);
 	glPopMatrix();
 
-  angle += 3;
-  if(angle > 360){
-    angle -= 360;
-  }
   glRotatef(angle, 0.0, 1.0, 0.0);
 
-	// this->world_marker();
- //  this->house();
-  // this->drawShape(globe);
-  this->drawShape(super_shape);
+  this->house();
+
+  glPushMatrix();
+    glTranslatef(0.0, 5.0, 30.0);
+    globe_angle += 2;
+    if(globe_angle > 360) {
+      globe_angle -= 360;
+    }
+    glRotatef(globe_angle, 0.0, 0.0, 1.0);
+    this->drawShape(globe);
+  glPopMatrix();
+
+  glPushMatrix();
+    glTranslatef(0.0, 5.0, -30.0);
+    super_angle += 2;
+    if(super_angle > 360) {
+      super_angle -= 360;
+    }
+    glRotatef(super_angle, 0.0, 1.0, 0.0);
+    this->drawShape(super_shape);
+  glPopMatrix();
+
+  glPushMatrix();
+    glTranslatef(0.0, -15.0, 0.0);
+    this->system();
+  glPopMatrix();
 
   glScalef(0.5, 0.5, 0.5);
 	glMatrixMode(GL_MODELVIEW);
@@ -376,4 +431,4 @@ void SolidCubeWidget::paintGL() { // paintGL()
 	// flush to screen
 	glFlush();	
 
-	} // paintGL()
+} 

@@ -5,35 +5,26 @@
 #include <QMenuBar>
 #include <QSlider>
 #include <QBoxLayout>
+#include <QSpinBox>
 #include "SolidCubeWidget.h"
+#include <QHBoxLayout>
+#include "iostream"
 
-class SolidCubeWindow: public QWidget
-	{ 
+class SolidCubeWindow: public QWidget { 
+	Q_OBJECT
 	public:
-       
-	
-	// constructor / destructor
-	SolidCubeWindow(QWidget *parent);
-	~SolidCubeWindow();
-
-	// visual hierarchy
-	// menu bar
-	QMenuBar *menuBar;
-		// file menu
-		QMenu *fileMenu;
-			// quit action
-			QAction *actionQuit;
-
-	// window layout
-	QBoxLayout *windowLayout;
-
-	// beneath that, the main widget
-	SolidCubeWidget *cubeWidget;
-	// and a slider for the number of vertices
-	QSlider *nVerticesSlider;
-
-	// resets all the interface elements
-	void ResetInterface();
-	}; 
+		SolidCubeWindow(QWidget *parent);
+		~SolidCubeWindow();
+		QBoxLayout *windowLayout;
+		QHBoxLayout *H_layout;
+		SolidCubeWidget *cubeWidget;
+		QSlider *nVerticesSlider;
+		QDoubleSpinBox *m;
+		QDoubleSpinBox *n1;
+		QDoubleSpinBox *n2;
+		QDoubleSpinBox *n3;
+	private slots:
+		void updateSuper();
+}; 
 	
 #endif
