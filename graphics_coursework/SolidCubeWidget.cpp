@@ -49,10 +49,24 @@ SolidCubeWidget::SolidCubeWidget(QWidget *parent) : QGLWidget(parent) {
   planet3_angle = 0.0;
   planet1_y = 0.0;
   planet1_y_goal = 8.0;
+  planet2_x = 0.0;
+  planet2_x_goal = 20.0;
+  planet2_y = 0.0;
+  planet2_y_goal = 8.0;
+  planet3_y = 0.0;
+  planet3_y_goal = 4.0;
   m = 12.0;
   n1 = 33.0;
   n2 = -10.0;
   n3 = 1.35; 
+
+  earth = new QImage();
+  if(earth->load("earth.ppm")) {
+    std::cout << earth->size().width() << std::endl;
+    std::cout << earth->size().height() << std::endl;
+  }
+
+  gen_texture();
 } 
 
 // called when OpenGL context is set up
@@ -69,7 +83,6 @@ void SolidCubeWidget::angleChange(int a) {
   angle = a;
 }
 
-
 // called every time the widget is resized
 void SolidCubeWidget::resizeGL(int w, int h) { 
 	glViewport(0, 0, w, h);
@@ -79,11 +92,6 @@ void SolidCubeWidget::resizeGL(int w, int h) {
    
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-	GLfloat light_pos[] = {0., 0., 100., 1.};	
-	glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
-  glLightf (GL_LIGHT0, GL_SPOT_CUTOFF,15.);
-
-
                                                                                                                                                                
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -243,9 +251,9 @@ void SolidCubeWidget::sphere(float radios) {
     QVector<point> temp;
     for (double phi = 0; phi <= 2*M_PI; phi += loop*2) {
       point t;
-      t.r = qSin(4*phi + 0);
-      t.g = qSin(4*phi + 2);
-      t.b = qSin(4*phi + 3);
+      t.r = qSin(6*phi + 1);
+      t.g = qSin(6*phi + 3);
+      t.b = qSin(6*phi + 4);
       t.x = qSin(theta)*qCos(phi)*radios;
       t.y = qSin(theta)*qSin(phi)*radios;
       t.z = qCos(theta)*radios;
@@ -316,18 +324,25 @@ void SolidCubeWidget::change_super(float m_n, float n1_n, float n2_n, float n3_n
 }
 
 void SolidCubeWidget::system() {
-  materialStruct *p_front = &brassMaterials;
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,    p_front->ambient);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,    p_front->diffuse);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,   p_front->specular);
-  glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS,   p_front->shininess);
+  // materialStruct *p_front = &brassMaterials;
+  // glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,    p_front->ambient);
+  // glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,    p_front->diffuse);
+  // glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,   p_front->specular);
+  // glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS,   p_front->shininess);
 
   materialStruct *planet1 = &emerald;
   materialStruct *planet2 = &earthGreen;
   materialStruct *planet3 = &red_plastic;
-
-  glutSolidSphere(7.0, 10, 10);
-
+  GLuint texName;
+  glEnable(GL_TEXTURE_2D);
+  glGenTextures(1, &texName);
+  glBindTexture(GL_TEXTURE_2D, texName);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2048, 1024, 0, GL_RGB, GL_UNSIGNED_BYTE, earth_tex);
+  GLUquadricObj *qobj = gluNewQuadric();
+  gluQuadricDrawStyle(qobj, GLU_FILL);
+  gluQuadricTexture(qobj,GL_TRUE);
+  gluSphere(qobj, 7.0, 10, 10);
+  glDisable(GL_TEXTURE_2D);
   // PLANET 1
   glPushMatrix();
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,  planet1->ambient);
@@ -360,8 +375,22 @@ void SolidCubeWidget::system() {
     if(planet2_angle > 360) {
       planet2_angle -= 360;
     }
+
+    planet2_x += 0.01*planet2_x_goal;
+    if(planet2_x > planet2_x_goal && planet2_x > planet2_x_goal*-1) {
+      planet2_x_goal *= -1;
+    } else if(planet2_x < planet2_x_goal && planet2_x < planet2_x_goal*-1) {
+      planet2_x_goal *= -1;
+    }
+
+    planet2_y += 0.005*planet2_y_goal;
+    if(planet2_y > planet2_y_goal && planet2_y > planet2_y_goal*-1) {
+      planet2_y_goal *= -1;
+    } else if(planet2_y < planet2_y_goal && planet2_y < planet2_y_goal*-1) {
+      planet2_y_goal *= -1;
+    }
     glRotatef(planet2_angle, 0.0, 1.0, 0.0);
-    glTranslatef(0.0, 0.0, 25.0);
+    glTranslatef(planet2_x, planet2_y, 25.0);
     glutSolidSphere(3.0, 7.0, 7.0);
   glPopMatrix();
 
@@ -375,10 +404,34 @@ void SolidCubeWidget::system() {
     if(planet3_angle > 360) {
       planet3_angle -= 360;
     }
+
+    planet3_y += 0.001*planet3_y_goal;
+    if(planet3_y > planet3_y_goal && planet3_y > planet3_y_goal*-1) {
+      planet3_y_goal *= -1;
+    } else if(planet3_y < planet3_y_goal && planet3_y < planet3_y_goal*-1) {
+      planet3_y_goal *= -1;
+    }
     glRotatef(planet3_angle, 0.0, 1.0, 0.0);
-    glTranslatef(0.0, 0.0, 40.0);
+    glTranslatef(planet3_y, 0.0, 40.0);
     glutSolidSphere(4.0, 7.0, 7.0);
   glPopMatrix();
+}
+
+void SolidCubeWidget::gen_texture() {
+  int width = earth->size().width();
+  int height = earth->size().height();
+  // GLubyte earth_tex[width][height][3]; 
+
+  for (int i = 0; i < width; ++i) {
+    for (int j = 0; i < height; ++i) {
+      QColor c = QColor(earth->pixel(i, j));
+      earth_tex[i][j][0] = c.red();
+      earth_tex[i][j][1] = c.green();
+      earth_tex[i][j][2] = c.blue();
+    }
+  }
+
+  // tex = earth_tex;
 }
 
 // called every time the widget needs painting

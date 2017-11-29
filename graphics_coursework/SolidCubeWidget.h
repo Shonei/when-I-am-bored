@@ -6,6 +6,8 @@
 #include "QtMath"
 #include "iostream"
 #include <QVector>
+#include <QImage>
+#include <QColor>
 
 
 typedef struct point {
@@ -32,6 +34,14 @@ class SolidCubeWidget: public QGLWidget {
 		float planet3_angle;
 		float planet1_y;
 		float planet1_y_goal;
+		float planet2_y;
+		float planet2_y_goal;
+		float planet2_x;
+		float planet2_x_goal;
+		float planet3_y;
+		float planet3_y_goal;
+		QImage *earth;
+		GLubyte earth_tex[2048][1024][3];
 		void initializeGL();
 		void resizeGL(int w, int h);
 		void paintGL();
@@ -50,6 +60,7 @@ class SolidCubeWidget: public QGLWidget {
 		void polygon(int, int, int, int);
 		void super_sphere(float radios = 8.0);
 		void system();
+		void gen_texture();
 
 	public slots:
 		void angleChange(int);
