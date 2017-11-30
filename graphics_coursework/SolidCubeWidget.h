@@ -41,7 +41,9 @@ class SolidCubeWidget: public QGLWidget {
 		float planet3_y;
 		float planet3_y_goal;
 		QImage *earth;
+		QImage *marc;
 		GLubyte earth_tex[2048][1024][3];
+		GLubyte marc_tex[128][128][3];
 		void initializeGL();
 		void resizeGL(int w, int h);
 		void paintGL();
@@ -61,6 +63,7 @@ class SolidCubeWidget: public QGLWidget {
 		void super_sphere(float radios = 8.0);
 		void system();
 		void gen_texture();
+		void draw_tex(QVector< QVector<point> >);
 
 	public slots:
 		void angleChange(int);

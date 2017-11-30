@@ -66,6 +66,12 @@ SolidCubeWidget::SolidCubeWidget(QWidget *parent) : QGLWidget(parent) {
     std::cout << earth->size().height() << std::endl;
   }
 
+  marc = new QImage();
+  if(marc->load("marc.ppm")) {
+    std::cout << marc->size().width() << std::endl;
+    std::cout << marc->size().height() << std::endl;
+  }
+
   gen_texture();
 } 
 
@@ -74,6 +80,21 @@ void SolidCubeWidget::initializeGL() {
   glClearColor(0.3, 0.3, 0.3, 0.0);
   this->sphere(7.0);
   this->super_sphere();
+
+  glEnable(GL_TEXTURE_2D);
+
+  GLuint textures[2];
+  glGenTextures(1, &textures[0]);
+  glBindTexture(GL_TEXTURE_2D, textures[0]);
+
+  glGenTextures(1, &textures[1]);
+  glBindTexture(GL_TEXTURE_2D, textures[1]);
+
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
   QTimer *timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(update()));
   timer->start(20);
@@ -210,6 +231,7 @@ void SolidCubeWidget::house() {
   glMaterialfv(GL_FRONT, GL_SPECULAR, brown_trans);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   // window
   glNormal3fv(normals[1]); 
   glBegin(GL_POLYGON);
@@ -219,6 +241,8 @@ void SolidCubeWidget::house() {
     glVertex3f( -10.0, 12.0, -5.0);
   glEnd();
   glPopMatrix();
+
+  glDisable(GL_BLEND);
 
   glPushMatrix();
   GLfloat red[4] = {0.698, 0.133, 0.133, 1.0};
@@ -242,7 +266,7 @@ void SolidCubeWidget::house() {
     glVertex3f( -21.0, 14.0,  15.5);
     glVertex3f( -21.0, 14.0, -15.5);
   glEnd();
-    glPopMatrix();
+  glPopMatrix();
 }
 	
 void SolidCubeWidget::sphere(float radios) {
@@ -298,7 +322,7 @@ double  SolidCubeWidget::super_formula(float angle) {
 void SolidCubeWidget::drawShape(QVector< QVector<point> > vec) {
   glDisable(GL_LIGHTING);
   glEnable(GL_SMOOTH);
-  // glShadeModel(GL_FLAT);
+
   for (int i = 0; i < vec.size()-1; ++i) {
     glBegin(GL_TRIANGLE_STRIP);
     for (int j = 0; j < vec[i].size(); ++j) {
@@ -324,25 +348,24 @@ void SolidCubeWidget::change_super(float m_n, float n1_n, float n2_n, float n3_n
 }
 
 void SolidCubeWidget::system() {
-  // materialStruct *p_front = &brassMaterials;
-  // glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,    p_front->ambient);
-  // glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,    p_front->diffuse);
-  // glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,   p_front->specular);
-  // glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS,   p_front->shininess);
+  materialStruct *p_front = &brassMaterials;
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,    p_front->ambient);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,    p_front->diffuse);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,   p_front->specular);
+  glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS,   p_front->shininess);
 
   materialStruct *planet1 = &emerald;
   materialStruct *planet2 = &earthGreen;
   materialStruct *planet3 = &red_plastic;
-  GLuint texName;
-  glEnable(GL_TEXTURE_2D);
-  glGenTextures(1, &texName);
-  glBindTexture(GL_TEXTURE_2D, texName);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2048, 1024, 0, GL_RGB, GL_UNSIGNED_BYTE, earth_tex);
-  GLUquadricObj *qobj = gluNewQuadric();
-  gluQuadricDrawStyle(qobj, GLU_FILL);
-  gluQuadricTexture(qobj,GL_TRUE);
-  gluSphere(qobj, 7.0, 10, 10);
-  glDisable(GL_TEXTURE_2D);
+  
+  glPushMatrix();
+    glRotatef(planet3_angle, 0.0, 1.0, 0.0);
+    glRotatef(90, 1.0, 0.0, 0.0);
+    this->draw_tex(globe);
+  glPopMatrix();
+
+  // glutSolidSphere(7.0, 10, 10);
+
   // PLANET 1
   glPushMatrix();
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,  planet1->ambient);
@@ -420,10 +443,9 @@ void SolidCubeWidget::system() {
 void SolidCubeWidget::gen_texture() {
   int width = earth->size().width();
   int height = earth->size().height();
-  // GLubyte earth_tex[width][height][3]; 
 
   for (int i = 0; i < width; ++i) {
-    for (int j = 0; i < height; ++i) {
+    for (int j = 0; j < height; ++j) {
       QColor c = QColor(earth->pixel(i, j));
       earth_tex[i][j][0] = c.red();
       earth_tex[i][j][1] = c.green();
@@ -431,14 +453,67 @@ void SolidCubeWidget::gen_texture() {
     }
   }
 
-  // tex = earth_tex;
+  width = marc->size().width();
+  height = marc->size().height();
+
+  for (int i = 0; i < width; ++i) {
+    for (int j = 0; j < height; ++j) {
+      QColor c = QColor(marc->pixel(i, j));
+      marc_tex[i][j][0] = c.red();
+      marc_tex[i][j][1] = c.green();
+      marc_tex[i][j][2] = c.blue();
+    }
+  }
+}
+
+void SolidCubeWidget::draw_tex(QVector< QVector<point> > vec) {
+  glPushMatrix();
+  glDisable(GL_LIGHTING);
+  
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); 
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2048, 1024, 0, GL_RGB, GL_UNSIGNED_BYTE, earth_tex);
+
+  glPushMatrix();
+  glTranslatef(0.0, 5.0, 0.0);
+  float tex_step = 0.5 / vec.size(); 
+  for (int i = 0; i < vec.size()-1; ++i) {
+    glBegin(GL_TRIANGLE_STRIP);
+    for (int j = 0; j < vec[i].size(); ++j) {
+      point t1 = vec[i][j];
+      glTexCoord2f(i*tex_step, j*tex_step);
+      glVertex3f( t1.x, t1.y, t1.z);
+
+      point t2 = vec[i+1][j];
+      glTexCoord2f(i*tex_step, j*tex_step);
+      glVertex3f( t2.x, t2.y, t2.z);
+    }
+    glEnd();
+  }
+  glPopMatrix();
+
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 128, 128, 0, GL_RGB, GL_UNSIGNED_BYTE, marc_tex);
+  glBegin(GL_POLYGON);
+  glTexCoord2f(0.,0);
+    glVertex3f( -14.0, 22.0, -15.5);
+    glTexCoord2f(1.,0.);
+    glVertex3f( -14.0, 22.0,  15.5);
+glTexCoord2f(1.,1.);
+    glVertex3f(  -8.0, 14.0,  15.5);
+    glTexCoord2f(0.,1.);
+    glVertex3f(  -8.0, 14.0, -15.5);
+  glEnd();
+
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); 
+  glEnable(GL_LIGHTING);
+  glPopMatrix();
 }
 
 // called every time the widget needs painting
 void SolidCubeWidget::paintGL() { 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glEnable(GL_DEPTH_TEST);                                                                                             
+	glEnable(GL_DEPTH_TEST);        
+  glEnable(GL_TEXTURE_2D);                                                                                     
   glShadeModel(GL_SMOOTH);
 	glPushMatrix();
 	glLoadIdentity();
