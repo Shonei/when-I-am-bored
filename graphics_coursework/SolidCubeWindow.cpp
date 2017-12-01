@@ -47,7 +47,13 @@ SolidCubeWindow::SolidCubeWindow(QWidget *parent) : QWidget(parent) {
 
 	windowLayout->addLayout(H_layout);
 
+	checkbox = new QCheckBox("Bird flying?");
+	checkbox->setCheckState(Qt::Checked);
+
+	windowLayout->addWidget(checkbox);
+
 	connect(nVerticesSlider, SIGNAL(valueChanged(int)), cubeWidget, SLOT(angleChange(int)));
+	connect(checkbox, SIGNAL(stateChanged(int)), cubeWidget, SLOT(flapping()));
 	connect(m, SIGNAL(valueChanged(double)), this, SLOT(updateSuper()));
 	connect(n1, SIGNAL(valueChanged(double)), this, SLOT(updateSuper()));
 	connect(n2, SIGNAL(valueChanged(double)), this, SLOT(updateSuper()));

@@ -40,6 +40,11 @@ class SolidCubeWidget: public QGLWidget {
 		float planet2_x_goal;
 		float planet3_y;
 		float planet3_y_goal;
+		float wing_angle;
+		float wing_angle_goal; 
+		float circle_bird;
+		bool flap;
+		GLuint textures[2];
 		QImage *earth;
 		QImage *marc;
 		GLubyte earth_tex[2048][1024][3];
@@ -62,11 +67,14 @@ class SolidCubeWidget: public QGLWidget {
 		void polygon(int, int, int, int);
 		void super_sphere(float radios = 8.0);
 		void system();
+		void bird(bool);
+		void wing(float);
 		void gen_texture();
 		void draw_tex(QVector< QVector<point> >);
 
 	public slots:
 		void angleChange(int);
+		void flapping();
 };
 	
 #endif

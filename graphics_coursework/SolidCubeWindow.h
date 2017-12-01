@@ -9,6 +9,7 @@
 #include "SolidCubeWidget.h"
 #include <QHBoxLayout>
 #include "iostream"
+#include <QCheckBox>
 
 class SolidCubeWindow: public QWidget { 
 	Q_OBJECT
@@ -23,6 +24,7 @@ class SolidCubeWindow: public QWidget {
 		QDoubleSpinBox *n1;
 		QDoubleSpinBox *n2;
 		QDoubleSpinBox *n3;
+		QCheckBox *checkbox;
 	private slots:
 		void updateSuper();
 }; 
