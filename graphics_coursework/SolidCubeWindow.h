@@ -6,7 +6,7 @@
 #include <QSlider>
 #include <QBoxLayout>
 #include <QSpinBox>
-#include "SolidCubeWidget.h"
+#include "Scene.h"
 #include <QHBoxLayout>
 #include "iostream"
 #include <QCheckBox>
@@ -18,7 +18,7 @@ class SolidCubeWindow: public QWidget {
 		~SolidCubeWindow();
 		QBoxLayout *windowLayout;
 		QHBoxLayout *H_layout;
-		SolidCubeWidget *cubeWidget;
+		Scene *cubeWidget;
 		QSlider *nVerticesSlider;
 		QDoubleSpinBox *m;
 		QDoubleSpinBox *n1;

@@ -11,7 +11,7 @@ QT += widgets opengl gui
 LIBS += -lglut -lGLU
 
 # Input
-HEADERS += SolidCubeWidget.h SolidCubeWindow.h 
+HEADERS += Scene.h SolidCubeWindow.h 
 SOURCES += SolidCubeMain.cpp \
-           SolidCubeWidget.cpp \
+           Scene.cpp \
            SolidCubeWindow.cpp
