@@ -4,33 +4,19 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-int main(int argc, char *argv[])
-	{ // main()
-	// create the application
+int main(int argc, char *argv[]) { 
 	QApplication app(argc, argv);
-glutInit(&argc, argv);
-	// create model (polygon) as a triangle
-	//	GLPolygon *polygon = new GLPolygon();
+	glutInit(&argc, argv);
 
-	// create a master widget
-       	SolidCubeWindow *window = new SolidCubeWindow(NULL);
+   SolidCubeWindow *window = new SolidCubeWindow(NULL);
 
-	// create a controller to hook things up
-	//	GLPolygonController *controller = new GLPolygonController(window, polygon);
+	window->resize(612, 612);
 
-	// resize the window
-	window->resize(512, 612);
-
-	// show the label
 	window->show();
 
-	// start it running
 	app.exec();
 
-	// clean up
-	//	delete controller;
 	delete window;
 	
-	// return to caller
 	return 0; 
-	} // main()
+	} 

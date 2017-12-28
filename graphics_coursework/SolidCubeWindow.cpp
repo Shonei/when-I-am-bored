@@ -4,7 +4,7 @@ SolidCubeWindow::SolidCubeWindow(QWidget *parent) : QWidget(parent) {
 	windowLayout = new QBoxLayout(QBoxLayout::TopToBottom, this);
 	H_layout = new QHBoxLayout();
 
-	cubeWidget = new SolidCubeWidget(this);
+	cubeWidget = new Scene(this);
 	windowLayout->addWidget(cubeWidget);
 
 	nVerticesSlider = new QSlider(Qt::Horizontal);
