@@ -1,21 +1,46 @@
 import React, { Component } from 'react';
-import fetch from 'node-fetch';
 
 class Saved extends Component {
   constructor(props) {
-      super(props);
+    super(props);
+
+    this.state = {
+      body: []
+    };
+
+    this.generateTweet = this.generateTweet.bind(this);
   }
 
   componentDidMount() {
-    // fetch('http://localhost:8080')
-    // .then((el)=>el.json())
-    // .then(console.log)
-    // .catch(console.log)
+    this.props.database.ref('tweets').once('value').then(snapshot => {
+      const tweets = snapshot.val();
+      for(let key in tweets) {
+        this.generateTweet(tweets[key], key);
+      }
+    });
+  }
+
+  generateTweet(tweet, index) {
+    const t = <div key={index}>
+      <li className="collection-item avatar">
+        <span className="title"><b>User:</b> {tweet.uname}</span>
+        <p><b>Content: </b>{tweet.original}</p>
+        <p><b>Translated: </b>{tweet.translated}</p>
+      </li>
+    </div>;
+
+    let arr = this.state.body;
+    arr.push(t);
+    this.setState({ body: arr });
   }
 
   render() {
     return (
-      <div>Saved tweets go here</div>
+      <div>
+        <ul className="collection">
+          {this.state.body}
+        </ul>
+      </div>
     );
   }
 }

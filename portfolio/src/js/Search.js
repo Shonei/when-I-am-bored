@@ -74,21 +74,13 @@ class Search extends Component {
   }
 
   saveTweet(user, content, translatedContent) {
-    const data = [
-      { 'Key': 'uname', 'Value': String(user) },
-      { 'Key': 'original', 'Value': String(content) },
-      { 'Key': 'translated', 'Value': String(translatedContent) }
-    ]
-
-    const url = 'http://localhost:8080/post/Tweets';
-
-    fetch(url, {
-      method: 'post',
-      headers:  new Headers(),
-      // mode: 'cors',
-      body: JSON.stringify(data)})
-    .then(console.log)
-    .catch(console.log)
+    const tweets = this.props.database.ref('/tweets');
+    const newTweet = tweets.push();
+    newTweet.set({
+      uname: String(user),
+      original: String(content),
+      translated: String(translatedContent)
+    });
   }
 
   start() {
@@ -104,17 +96,17 @@ class Search extends Component {
     return (
       <div className="container">
         <div className="input-field col s6">
-          <i onClick={e => this.search('http://localhost:8081/search/' + this.state.searchTweets)}
+          <i onClick={e => this.search('https://website-6de1e.appspot.com/search/' + this.state.searchTweets)}
             style={iStyle} className="material-icons prefix">search</i>
           <input onChange={e => this.setState({ searchTweets: e.target.value })}
-            id="icon_telephone" type="tel" className="validate"></input>
+            id="icon_telephone" type="search" className="validate"></input>
           <label htmlFor="icon_telephone">Tweets</label>
         </div>
         <div className="input-field col s6">
-          <i onClick={e => this.search('http://localhost:8081/user/' + this.state.searchUser)}
+          <i onClick={e => this.search('https://website-6de1e.appspot.com/user/' + this.state.searchUser)}
             style={iStyle} className="material-icons prefix">search</i>
           <input onChange={e => this.setState({ searchUser: e.target.value })}
-            id="icon_telephone" type="tel" className="validate"></input>
+            id="icon_telephone" type="search" className="validate"></input>
           <label htmlFor="icon_telephone">Users</label>
         </div>
         <a className="dropdown-button btn" data-activates="lang"><i className="material-icons right">arrow_drop_down</i>Language</a>
@@ -125,6 +117,22 @@ class Search extends Component {
               language: e.target.textContent, lang: e.target.getAttribute('val')
             })}
             >Bulgarian</a></li>
+            <li><a val="fr" onClick={e => this.setState({
+              language: e.target.textContent, lang: e.target.getAttribute('val')
+            })}
+            >French</a></li>
+            <li><a val="de" onClick={e => this.setState({
+              language: e.target.textContent, lang: e.target.getAttribute('val')
+            })}
+            >German</a></li>
+            <li><a val="ja" onClick={e => this.setState({
+              language: e.target.textContent, lang: e.target.getAttribute('val')
+            })}
+            >Japanese</a></li>
+            <li><a val="ru" onClick={e => this.setState({
+              language: e.target.textContent, lang: e.target.getAttribute('val')
+            })}
+            >Russian</a></li>
             <li><a val="es" onClick={e => this.setState({
               language: e.target.textContent, lang: e.target.getAttribute('val')
             })}

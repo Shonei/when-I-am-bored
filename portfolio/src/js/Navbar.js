@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import {Navbar, NavItem} from 'react-materialize';
+import { Navbar, NavItem } from 'react-materialize';
 import Grid from './Grid';
 import Scrabble from './Scrabble';
 import User from './User';
@@ -12,28 +12,30 @@ class Nav extends Component {
     super(props);
 
     this.mainBody = {
-      '/scrabble' : <Scrabble></Scrabble>,
-      '/' : <Grid></Grid>
+      '/scrabble': <Scrabble></Scrabble>,
+      '/': <Grid></Grid>
     };
   }
 
   componentDidMount() {
-    if(window.location.pathname === '/scrabble'){
-      ReactDOM.render(<Scrabble 
+    if (window.location.pathname === '/scrabble') {
+      ReactDOM.render(<Scrabble
         database={this.props.firebase.database()}>
-        </Scrabble>, document.getElementById('content'));
-    } else if(window.location.pathname === '/') {
+      </Scrabble>, document.getElementById('content'));
+    } else if (window.location.pathname === '/') {
       ReactDOM.render(<Grid></Grid>, document.getElementById('content'));
-    } else if(window.location.pathname === '/scrabble/user') {
-      ReactDOM.render(<User 
+    } else if (window.location.pathname === '/scrabble/user') {
+      ReactDOM.render(<User
         database={this.props.firebase.database()}>
-        </User>, document.getElementById('content'));
-    } else if(window.location.pathname === '/scrabble/leaderboard') {
-      ReactDOM.render(<Lead 
+      </User>, document.getElementById('content'));
+    } else if (window.location.pathname === '/scrabble/leaderboard') {
+      ReactDOM.render(<Lead
         database={this.props.firebase.database()}>
-        </Lead>, document.getElementById('content'));
+      </Lead>, document.getElementById('content'));
     } else if (window.location.pathname === '/ds') {
-      ReactDOM.render(<MainDs></MainDs>, document.getElementById('content'));
+      ReactDOM.render(<MainDs
+        database={this.props.firebase.database()}>
+      </MainDs>, document.getElementById('content'));
     }
   }
 

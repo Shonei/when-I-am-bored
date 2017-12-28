@@ -2,7 +2,7 @@
   "hosting": {
     "public": "build",
     "ignore": [
-      "firebase.json",
+      // "firebase.json",
       "**/.*",
       "**/node_modules/**",
       "src",
@@ -12,10 +12,6 @@
       {
         "source": "/cv.html",
         "destination": "/cv.html"
-      },
-      {
-        "source": "**",
-        "destination": "/index.html"
       }
     ]
     }
