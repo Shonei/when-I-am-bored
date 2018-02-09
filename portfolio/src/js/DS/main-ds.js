@@ -19,7 +19,7 @@ class MainDs extends Component {
     return (
       <div>
         <br />
-        <div>
+        <div className="container">
           <a style={a} onClick={() => this.setState({ body: <Search database={this.props.database}></Search> })} className="waves-effect waves-light btn"><i className="material-icons left">folder</i>Search</a>
           <a style={a} onClick={() => this.setState({ body: <Saved database={this.props.database}></Saved> })} className="waves-effect waves-light btn"><i className="material-icons left">folder</i>Saved</a>
         </div>

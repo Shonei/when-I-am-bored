@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Row, Col, Breadcrumb, MenuItem} from 'react-materialize';
+import {Row, Col} from 'react-materialize';
 
 const p = {
   fontSize: '20px'
@@ -10,7 +10,7 @@ const img = {
   maxWidth: '60px'
 };
 
-class Lead extends Component {
+class Leaderboard extends Component {
   constructor(props) {
     super(props);
 
@@ -21,17 +21,20 @@ class Lead extends Component {
     this.componentDidMount = this.componentDidMount.bind(this);
   }
 
+  // Loads the members and creates an array of Col that contains each member 
+  // in the leader board
   componentDidMount() {
-    this.props.database.ref('scrabble/members').once('value').then(snapshot => {
+    this.props.database.ref('scrabble/members').orderByChild('wins').once('value').then(snapshot => {
       const arr = [];
       let place = 1;
-      for(let key in snapshot.val()) {
+      const vals = snapshot.val();
+      
+      for(let key in vals) {
         const temp =  
           <Col key={key} s={12}>
-            <p style={p}><img style={img} src={snapshot.val()[key].img} alt={key}/>
-            <b>{place}st. </b>Shonei</p>
+            <p style={p}><img style={img} src={vals[key].img} alt={key}/>
+              <b>{place} </b>{key}</p>
           </Col>;
-
         arr.push(temp);
         place++;
       }
@@ -43,11 +46,6 @@ class Lead extends Component {
   render() {
     return (
       <div>
-        <Breadcrumb>
-          <MenuItem href="/">Home page</MenuItem>
-          <MenuItem href="/scrabble">Scrabble</MenuItem>
-          <MenuItem href="/scrabble/leaderboard">Leaderboard</MenuItem>
-        </Breadcrumb>
         <div className="container">
           <h3 className="center-align">Leaderboard</h3>
           <Row>
@@ -59,4 +57,4 @@ class Lead extends Component {
   }
 }
 
-export default Lead;
+export default Leaderboard;

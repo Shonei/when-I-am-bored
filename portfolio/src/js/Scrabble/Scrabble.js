@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {Breadcrumb, MenuItem, Row, Col, Button} from 'react-materialize';
-import Item from './Item';
+import { Row, Col, Button } from 'react-materialize';
+import Item from './../Item';
 
 class Scrabble extends Component {
   constructor(props) {
@@ -11,23 +11,26 @@ class Scrabble extends Component {
     };
 
     this.handleClick = this.handleClick.bind(this);
-    
+  }
+
+  // loads all the players from the Database and displayes hteir pofile picture and name
+  componentDidMount() {
     this.props.database.ref('scrabble/members').once('value').then(snapshot => {
       const arr = [];
-      for(let key in snapshot.val()) {
-        const item = <Col key={key} s={12} m={6} l={4}><Item 
-                          title={key} img={snapshot.val()[key].img} 
-                          onclick={(e)=>this.handleClick(key)}/>
-                      </Col>;
+      for (let key in snapshot.val()) {
+        const item = <Col key={key} s={12} m={6} l={4}><Item
+          title={key} img={snapshot.val()[key].img}
+          onclick={(e) => this.handleClick(key)} />
+        </Col>;
         arr.push(item);
       }
 
-      this.setState({body:<Row>{arr}</Row>});
+      this.setState({ body: <Row>{arr}</Row> });
     });
   }
 
   handleClick(user) {
-    this.props.database.ref('scrabble/members/'+user).once('value').then(snapshot => {
+    this.props.database.ref('scrabble/members/' + user).once('value').then(snapshot => {
       let temp = snapshot.val();
       temp.uname = user;
       window.localStorage.setItem('user', window.JSON.stringify(temp));
@@ -38,10 +41,6 @@ class Scrabble extends Component {
   render() {
     return (
       <div>
-        <Breadcrumb>
-          <MenuItem href="/">Home page</MenuItem>
-          <MenuItem href="/scrabble">Scrabble</MenuItem>
-        </Breadcrumb>
         <Row></Row>
         <div className="container">
           {this.state.body}

@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Navbar, NavItem } from 'react-materialize';
 import Grid from './Grid';
-import Scrabble from './Scrabble';
-import User from './User';
-import Lead from './Leaderboard';
-import MainDs from './main-ds';
+import Scrabble from './Scrabble/Scrabble';
+import User from './Scrabble/User';
+import Leaderboard from './Scrabble/Leaderboard';
+import MainDs from './DS/main-ds';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 class Nav extends Component {
   constructor(props) {
@@ -17,28 +18,6 @@ class Nav extends Component {
     };
   }
 
-  componentDidMount() {
-    if (window.location.pathname === '/scrabble') {
-      ReactDOM.render(<Scrabble
-        database={this.props.firebase.database()}>
-      </Scrabble>, document.getElementById('content'));
-    } else if (window.location.pathname === '/') {
-      ReactDOM.render(<Grid></Grid>, document.getElementById('content'));
-    } else if (window.location.pathname === '/scrabble/user') {
-      ReactDOM.render(<User
-        database={this.props.firebase.database()}>
-      </User>, document.getElementById('content'));
-    } else if (window.location.pathname === '/scrabble/leaderboard') {
-      ReactDOM.render(<Lead
-        database={this.props.firebase.database()}>
-      </Lead>, document.getElementById('content'));
-    } else if (window.location.pathname === '/ds') {
-      ReactDOM.render(<MainDs
-        database={this.props.firebase.database()}>
-      </MainDs>, document.getElementById('content'));
-    }
-  }
-
   render() {
     return (
       <div>
@@ -47,6 +26,15 @@ class Nav extends Component {
           <NavItem target="_blank" href="/cv.html" className="indigo lighten-3">CV</NavItem>
           <NavItem href="https://github.com/Shonei" className="indigo lighten-3">Github</NavItem>
         </Navbar>
+        <Router>
+          <div>
+            <Route exact path="/" component={Grid} />
+            <Route exact path="/scrabble" render={() => <Scrabble database={this.props.firebase.database()} />} />
+            <Route exact path="/scrabble/user" render={() => <User database={this.props.firebase.database()} />} />
+            <Route exact path="/scrabble/leaderboard" render={() => <Leaderboard database={this.props.firebase.database()} />} />
+            <Route exact path="/ds" render={() => <MainDs database={this.props.firebase.database()} />} />
+          </div>
+        </Router>
       </div>
     );
   }
