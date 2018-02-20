@@ -80,35 +80,50 @@ void copyCard( const card *source, card *dest )
 	dest->suit  = source->suit;
 }
 
+// swaps 2 cards in the deck
+// it creates an temporary card and then copies the cards to their new location
 void swap( card *first, card *second )
 {
-	card temp = { .value = 0, .suit = Hearts };
-	copyCard( first, &temp );
-	copyCard( second, first );
-	copyCard( &temp, second );
+	card temp = { 99, Hearts };
+	#pragma omp critical
+	{
+		copyCard( first, &temp );
+		copyCard( second, first );
+		copyCard( &temp, second );
+	}
 }
 
+// By decreasing the decjSize we deckrise the value that are to be read
+// from the array when we want to use it.
 void pop()
 {
-	// deck[deckSize] = NULL;
-
-	// Increment the stack counter.
 	#pragma omp atomic
 	deckSize--;
 }
 
 void shuffle(int iterations)
 {
-	srand(3);
-	int x = rand() % (MAX_DECK_SIZE + 1 - 0) + 0;
-	int y = 0;
+	// srand(3);
+	// int x = rand() % (MAX_DECK_SIZE + 1 - 0) + 0;
+	// int y = 0;
+	// int i;
+	// for(i = 0; i < iterations; i++)
+	// {
+	// 	swap(&deck[y], &deck[x]);
+	// 	y = x;
+	// 	x = rand() % (MAX_DECK_SIZE + 1 - 0) + 0;
+	// }
+
+	// 
+	// Swaps elemets of the array
+	// [1, 2, 3, 4, 5, 6] => [6, 5, 4, 3, 2, 1]
+	// it assumes that the number of elements is even
+	// 
 	int i;
-	for(i = 0; i < iterations; i++)
+	#pragma omp parallel for
+	for(i = 1; i < MAX_DECK_SIZE / 2; i++)
 	{
-		printf("%d - %d\n", x, y);
-		swap(&deck[y], &deck[x]);
-		y = x;
-		x = rand() % (MAX_DECK_SIZE + 1 - 0) + 0;
+		swap(&deck[i-1], &deck[MAX_DECK_SIZE-i]);
 	}
 }
 
@@ -148,7 +163,7 @@ int main( int argc, char** argv )
 	//
 	if( numToRemove>0 )
 	{
-		// ... (add code to pop numToRemove cards from the deck)
+		// Lopp and remove all the needed cards from the deck
 		int i;
 		#pragma omp parallel for
 		for(i = numToRemove; i > 0; i--)
@@ -166,5 +181,3 @@ int main( int argc, char** argv )
 	finaliseDeck();					// MUST BE CALLED; DO NOT MODIFY OR REPLACE.
 	return EXIT_SUCCESS;
 }
-
-
