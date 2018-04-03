@@ -101,10 +101,12 @@ int main(int argc, char **argv) {
   if (!checkHist) return allocateFail("histogram for checking", rank);
   for (i = 0; i < maxValue + 1; i++) checkHist[i] = 0;
 
+  // do the work of couting the numbers
+  // rank 0  is special because he uses the whole data set
   if (rank == 0) {
     for (i = pixelsPerProc * (numProcs - 1); i < dataSize; i++) {
       if (image[i] >= 0) {
-        checkHist[image[i]]++;
+        combinedHist[image[i]]++;
       }
     }
   } else {
@@ -115,31 +117,74 @@ int main(int argc, char **argv) {
     }
   }
 
-  if (rank == 0) {
-    int *temp = (int *)malloc((maxValue + 1) * sizeof(int));
-    for (i = 0; i < maxValue + 1; i++) temp[i] = 0;
+  // combine the results in rank 0
+  // if (rank == 0) {
+  //   int *temp = (int *)malloc((maxValue + 1) * sizeof(int));
+  //   for (i = 0; i < maxValue + 1; i++) temp[i] = 0;
 
-    for (i = 0; i < numProcs - 1; i++) {
-      printf("Call to combine - %d\n", i);
-      MPI_Recv(temp, maxValue, MPI_INT, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD,
-               MPI_STATUS_IGNORE);
+  //   // rank 0 will recieve data from all other processes so we recieve using
+  //   // numprocs - 1
+  //   for (i = 0; i < numProcs - 1; i++) {
+  //     printf("Call to combine - %d\n", i);
+  //     // we use MPI_ANY_SOURCE because order does not matter
+  //     MPI_Recv(temp, maxValue, MPI_INT, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD,
+  //              MPI_STATUS_IGNORE);
 
-      int j;
-      for (j = 0; j <= maxValue; j++) {
-        checkHist[j] += temp[j];
+  //     int j;
+  //     for (j = 0; j <= maxValue; j++) {
+  //       combinedHist[j] += temp[j];
+  //     }
+  //   }
+
+  //   free(temp);
+  // } else {
+  //   // all other processes eend to rank 0 the data
+  //   MPI_Send(checkHist, maxValue, MPI_INT, 0, 0, MPI_COMM_WORLD);
+  // }
+
+  // combine data using a binary tree
+  int *temp = (int *)malloc((maxValue + 1) * sizeof(int));
+  for (i = 0; i < maxValue + 1; i++) temp[i] = 0;
+  for (i = numProcs; i >= 1; i = i / 2) {
+    // processes that have to combine data
+    if (rank < i) {
+      // processes that need to send data
+      if (rank >= i / 2) {
+        if (rank != rank - (i / 2)) {
+          printf("Process - %d sending data to process - %d\n", rank,
+                 rank - (i / 2));
+          MPI_Send(checkHist, maxValue, MPI_INT, rank - (i / 2), 0,
+                   MPI_COMM_WORLD);
+        }
+      } else if (rank < i / 2) {
+        // processes that need to recieve data
+        printf("Process - %d recieving data from process - %d\n", rank,
+               rank + (i / 2));
+        MPI_Recv(temp, maxValue, MPI_INT, rank + (i / 2), 0, MPI_COMM_WORLD,
+                 MPI_STATUS_IGNORE);
+        int j;
+        if (rank == 0) {
+          printf("Process - %d combining data\n", rank);
+          for (j = 0; j <= maxValue; j++) {
+            combinedHist[j] += temp[j];
+          }
+        } else {
+          printf("Process - %d combining data\n", rank);
+          for (j = 0; j <= maxValue; j++) {
+            checkHist[j] += temp[j];
+          }
+        }
       }
     }
-
-    free(temp);
-  } else {
-    MPI_Send(checkHist, maxValue, MPI_INT, 0, 0, MPI_COMM_WORLD);
   }
 
-  if (rank == 0) {
-    for (i = 0; i <= maxValue; i++) {
-      combinedHist[i] = checkHist[i];
-    }
-  }
+  free(temp);
+
+  // if (rank == 0) {
+  //   for (i = 0; i <= maxValue; i++) {
+  //     combinedHist[i] = checkHist[i];
+  //   }
+  // }
 
   free(checkHist);
 
