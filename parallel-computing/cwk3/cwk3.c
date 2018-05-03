@@ -10,9 +10,6 @@
 #include <stdlib.h>
 #include "helper_cwk.h"			// Note this is not the same as the 'helper.h' used for examples.
 
-
-
-
 //
 // Main.
 //

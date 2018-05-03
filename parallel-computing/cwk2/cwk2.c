@@ -57,7 +57,8 @@ int main(int argc, char **argv) {
         "value %d.\n",
         dataSize, pixelsPerProc, maxValue);
 
-    // send the size of the data
+    // send the size of the data and the maxValue to all processes
+    // we use and array to limit the number of braodcasts to one
     localData[0] = pixelsPerProc;
     localData[1] = maxValue;
     MPI_Bcast(localData, 2, MPI_INT, 0, MPI_COMM_WORLD);
@@ -65,8 +66,14 @@ int main(int argc, char **argv) {
     // get the size of the local data that we will recieve
     MPI_Bcast(localData, 2, MPI_INT, 0, MPI_COMM_WORLD);
     printf("Data size - %d, max value - %d\n", localData[0], localData[1]);
+
+    // update local variables
     pixelsPerProc = localData[0];
     maxValue = localData[1];
+
+    // allocate memory for the data
+    // we do it here to avoid allocating it in rank 0 as it has access to the
+    // global data
     data = (int *)malloc(sizeof(int) * pixelsPerProc);
   }
 
@@ -85,6 +92,8 @@ int main(int argc, char **argv) {
   // provided.
   //
 
+  // on rank 0 we split and send the data to all processes
+  // all other ranks read the recieved data into the data variable
   if (rank == 0) {
     for (i = 1; i < numProcs; i++) {
       printf("Send to - %d\n", i);
@@ -103,7 +112,9 @@ int main(int argc, char **argv) {
 
   // do the work of couting the numbers
   // rank 0  is special because he uses the whole data set
+  // all other ranks use the data variable
   if (rank == 0) {
+    // we update the combinedHist as all the data will eventually end in it
     for (i = pixelsPerProc * (numProcs - 1); i < dataSize; i++) {
       if (image[i] >= 0) {
         combinedHist[image[i]]++;
@@ -116,7 +127,8 @@ int main(int argc, char **argv) {
       }
     }
   }
-
+free(data);
+  // POINT TO POINT COMMUNICATION CODE
   // combine the results in rank 0
   // if (rank == 0) {
   //   int *temp = (int *)malloc((maxValue + 1) * sizeof(int));
@@ -143,13 +155,20 @@ int main(int argc, char **argv) {
   // }
 
   // combine data using a binary tree
+  // temp is used to recieve the data from other processes when combinibng the
+  // data using a tree
   int *temp = (int *)malloc((maxValue + 1) * sizeof(int));
   for (i = 0; i < maxValue + 1; i++) temp[i] = 0;
+
+  // each iteration we need only half of the processes because the second half
+  // data has already been combined. This makes this algorithim wun in O(logn).
+  // we check if the proccess has a rank of < i to make sure we don't combine
+  // the same data twice.
   for (i = numProcs; i >= 1; i = i / 2) {
-    // processes that have to combine data
     if (rank < i) {
-      // processes that need to send data
       if (rank >= i / 2) {
+        // the second half of the processes needs to send the data to the first
+        // half
         if (rank != rank - (i / 2)) {
           printf("Process - %d sending data to process - %d\n", rank,
                  rank - (i / 2));
@@ -157,13 +176,20 @@ int main(int argc, char **argv) {
                    MPI_COMM_WORLD);
         }
       } else if (rank < i / 2) {
-        // processes that need to recieve data
+        // the first half of the processes recieve data from the second half and
+        // combine it
         printf("Process - %d recieving data from process - %d\n", rank,
                rank + (i / 2));
+
+        //  we could have used MPI_ANY_SOURCE to read the data but since we can
+        //  calculate it
+        // I am using a specific procces to recieve from.
+        // Lets just hope I always send from that proccess as well.
         MPI_Recv(temp, maxValue, MPI_INT, rank + (i / 2), 0, MPI_COMM_WORLD,
                  MPI_STATUS_IGNORE);
         int j;
         if (rank == 0) {
+          // Special case for rank 0 as it uses the combined histogram direcly
           printf("Process - %d combining data\n", rank);
           for (j = 0; j <= maxValue; j++) {
             combinedHist[j] += temp[j];
