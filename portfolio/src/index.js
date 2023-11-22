@@ -5,7 +5,7 @@ import Navbar from './js/Navbar';
 import registerServiceWorker from './js/registerServiceWorker';
 
 const config = {
-    apiKey: "AIzaSyA1wznaFOnhsj0ZX14zgIhrLC6wkmsS8X8",
+    apiKey: "",
     authDomain: "shonei-portfolio.firebaseapp.com",
     databaseURL: "https://shonei-portfolio.firebaseio.com",
     projectId: "shonei-portfolio",
