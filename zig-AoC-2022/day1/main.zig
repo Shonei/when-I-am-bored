@@ -5,7 +5,7 @@ pub fn main() !u8 {
     defer _ = gp.deinit();
     const allocator = gp.allocator();
 
-    var file = std.fs.cwd().openFile("C:/Users/ASUS/OneDrive/Documents/Projects/when-I-am-bored/zig-AoC-2022/day1/cal.txt", .{ .mode = std.fs.File.OpenMode.read_only }) catch |err| {
+    var file = std.fs.Dir.openFile("C:/Users/ASUS/OneDrive/Documents/Projects/when-I-am-bored/zig-AoC-2022/day1/cal.txt", .{ .mode = std.fs.File.OpenMode.read_only }) catch |err| {
         std.log.err("{}", .{err});
         return @as(u8, 1);
     };
